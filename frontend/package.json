@@ -1,0 +1,13 @@
+{
+  "name": "kids-coloring-game",
+  "version": "1.0.0",
+  "description": "Kids Coloring Game - Static Web Application",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "build": "echo 'Static web app - build complete'"
+  },
+  "keywords": ["coloring", "kids", "game"],
+  "author": "Çelikpençe",
+  "license": "MIT"
+}
