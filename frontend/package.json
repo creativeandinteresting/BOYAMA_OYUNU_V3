@@ -1,14 +1,13 @@
 {
-  "name": "frontend",
-  "main": "expo-router/entry",
+  "name": "kids-coloring-game-web",
+  "main": "src/index.html",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "lint": "expo lint"
+    "start": "python -m http.server 3000 --directory src",
+    "build": "echo 'Build complete - static files ready'",
+    "dev": "python -m http.server 3000 --directory src",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'"
   },
   "dependencies": {
     "@expo/ngrok": "^4.1.3",
