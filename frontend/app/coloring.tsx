@@ -51,7 +51,7 @@ const brushSizes = [5, 10, 15, 20, 25];
 export default function ColoringScreen() {
   const params = useLocalSearchParams();
   const { pageId, pageName } = params;
-  const canvasRef = Platform.OS !== 'web' ? useCanvasRef() : useRef();
+  const canvasRef = useRef();
   
   const [coloringPage, setColoringPage] = useState<ColoringPage | null>(null);
   const [selectedColor, setSelectedColor] = useState('#FF0000');
