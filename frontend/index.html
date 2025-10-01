@@ -389,16 +389,25 @@
         
         async function loadColoringPages() {
             try {
+                console.log('API_BASE:', API_BASE);
                 const url = selectedCategory === 'all' 
                     ? `${API_BASE}/api/coloring-pages`
                     : `${API_BASE}/api/coloring-pages?category=${selectedCategory}`;
                 
+                console.log('Fetching URL:', url);
                 const response = await fetch(url);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 coloringPages = await response.json();
+                console.log('Loaded pages:', coloringPages.length);
                 renderColoringPages();
             } catch (error) {
                 console.error('Failed to load coloring pages:', error);
-                document.getElementById('coloring-grid').innerHTML = '<div class="loading">Boyama sayfaları yüklenemedi.</div>';
+                document.getElementById('coloring-grid').innerHTML = `<div class="loading">Boyama sayfaları yüklenemedi.<br/>Hata: ${error.message}</div>`;
             }
         }
         
