@@ -346,9 +346,15 @@
                 });
             });
             
-            // Canvas drawing events
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
+            // Canvas drawing events with proper coordinate handling
+            canvas.addEventListener('mousedown', (e) => {
+                const coords = getCanvasCoordinates(e);
+                startDrawing(coords);
+            });
+            canvas.addEventListener('mousemove', (e) => {
+                const coords = getCanvasCoordinates(e);
+                draw(coords);
+            });
             canvas.addEventListener('mouseup', stopDrawing);
             canvas.addEventListener('mouseout', stopDrawing);
             
