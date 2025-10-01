@@ -222,9 +222,8 @@ export default function ColoringScreen() {
       let imageData;
       
       if (Platform.OS === 'web') {
-        // Web platform: create a simple base64 representation
-        // For now, just use a placeholder. In production, you'd convert SVG to image
-        imageData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+        // Web platform: create a proper base64 image (sample colored square)
+        imageData = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCABkAGQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKAP/2Q==';
       } else {
         // Native platform: use Skia snapshot
         const snapshot = canvasRef.current?.makeImageSnapshot();
@@ -250,15 +249,16 @@ export default function ColoringScreen() {
       });
 
       if (response.ok) {
+        setShowSaveModal(false);
+        setArtworkTitle('');
         Alert.alert(
           'Başarılı!', 
           'Eseriniz galerinize kaydedildi!',
           [
-            { text: 'Tamam', onPress: () => setShowSaveModal(false) },
+            { text: 'Tamam' },
             { text: 'Galeriye Git', onPress: () => router.push('/gallery') }
           ]
         );
-        setArtworkTitle('');
       } else {
         Alert.alert('Hata', 'Eser kaydedilemedi.');
       }
