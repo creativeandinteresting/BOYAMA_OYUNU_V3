@@ -483,25 +483,27 @@
                 
                 document.getElementById('current-page-name').textContent = pageName;
                 
-                // Process SVG content to fit canvas
+                // Process SVG content to fit canvas and make it bigger
                 let svgContent = page.svg_content;
                 
-                // Update SVG to fit our canvas size
-                if (svgContent.includes('viewBox=')) {
-                    // Replace existing viewBox with our canvas size
-                    svgContent = svgContent.replace(/viewBox='[^']*'/g, "viewBox='0 0 760 400'");
-                    svgContent = svgContent.replace(/viewBox="[^"]*"/g, 'viewBox="0 0 760 400"');
-                } else {
-                    // Add viewBox if not present
+                // Scale all coordinates by 2x to make shapes bigger
+                svgContent = svgContent.replace(/(\d+(?:\.\d+)?)/g, (match) => {
+                    const num = parseFloat(match);
+                    return (num * 1.8).toString(); // 1.8x scale for bigger shapes
+                });
+                
+                // Set proper viewBox and dimensions
+                svgContent = svgContent.replace(/viewBox='[^']*'/g, "viewBox='0 0 760 400'");
+                svgContent = svgContent.replace(/viewBox="[^"]*"/g, 'viewBox="0 0 760 400"');
+                
+                // Ensure SVG has correct attributes
+                if (!svgContent.includes('viewBox=')) {
                     svgContent = svgContent.replace('<svg', '<svg viewBox="0 0 760 400"');
                 }
                 
-                // Add width and height attributes
-                svgContent = svgContent.replace('<svg', '<svg width="760" height="400"');
-                
-                // Scale content to fit - multiply coordinates by scale factors
-                const scaleX = 760 / 300; // assuming original viewBox was 300
-                const scaleY = 400 / 300;
+                // Remove any existing width/height and set to 100%
+                svgContent = svgContent.replace(/width="[^"]*"/g, 'width="100%"');
+                svgContent = svgContent.replace(/height="[^"]*"/g, 'height="100%"');
                 
                 document.getElementById('template-svg').innerHTML = svgContent;
                 
