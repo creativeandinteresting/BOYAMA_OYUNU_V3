@@ -1,18 +1,14 @@
 {
   "name": "kids-coloring-game-web",
-  "main": "src/index.html",
+  "main": "index.html",
   "version": "1.0.0",
+  "description": "Kids Coloring Game - Static Web Application",
   "scripts": {
-    "start": "python -m http.server 3000 --directory src",
-    "build": "echo 'Build complete - static files ready'",
-    "dev": "python -m http.server 3000 --directory src",
-    "test": "echo 'No tests specified'",
-    "lint": "echo 'No linting configured'"
+    "start": "python -m http.server 3000",
+    "build": "echo 'Static web app - no build needed'",
+    "dev": "python -m http.server 3000"
   },
-  "dependencies": {
-    "expo": "^54.0.11"
-  },
+  "dependencies": {},
   "devDependencies": {},
-  "private": true,
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "private": true
 }
