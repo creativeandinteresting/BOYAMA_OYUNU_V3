@@ -332,29 +332,57 @@ export default function ColoringScreen() {
         </View>
         
         <View style={styles.canvasOverlay} {...panResponder.panHandlers}>
-          <Canvas ref={canvasRef} style={styles.canvas}>
-            {paths.map((pathData, index) => (
-              <Path
-                key={index}
-                path={pathData.path}
-                color={pathData.color}
-                style="stroke"
-                strokeWidth={pathData.strokeWidth}
-                strokeCap="round"
-                strokeJoin="round"
-              />
-            ))}
-            {currentPath && (
-              <Path
-                path={currentPath.path}
-                color={currentPath.color}
-                style="stroke"
-                strokeWidth={currentPath.strokeWidth}
-                strokeCap="round"
-                strokeJoin="round"
-              />
-            )}
-          </Canvas>
+          {Platform.OS === 'web' ? (
+            /* Web Canvas using SVG */
+            <Svg height="100%" width="100%" style={styles.canvas}>
+              {paths.map((pathData, index) => (
+                <SvgPath
+                  key={index}
+                  d={pathData.pathString}
+                  stroke={pathData.color}
+                  strokeWidth={pathData.strokeWidth}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
+              ))}
+              {currentPath && (
+                <SvgPath
+                  d={currentPath.pathString}
+                  stroke={currentPath.color}
+                  strokeWidth={currentPath.strokeWidth}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
+              )}
+            </Svg>
+          ) : (
+            /* Native Canvas using Skia */
+            <Canvas ref={canvasRef} style={styles.canvas}>
+              {paths.map((pathData, index) => (
+                <Path
+                  key={index}
+                  path={pathData.path}
+                  color={pathData.color}
+                  style="stroke"
+                  strokeWidth={pathData.strokeWidth}
+                  strokeCap="round"
+                  strokeJoin="round"
+                />
+              ))}
+              {currentPath && (
+                <Path
+                  path={currentPath.path}
+                  color={currentPath.color}
+                  style="stroke"
+                  strokeWidth={currentPath.strokeWidth}
+                  strokeCap="round"
+                  strokeJoin="round"
+                />
+              )}
+            </Canvas>
+          )}
         </View>
 
         {/* Placed Stickers */}
