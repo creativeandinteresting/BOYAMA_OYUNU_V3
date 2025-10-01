@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çocuk Boyama Oyunu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #FFB6C1 0%, #FFF5F5 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: #FF6B9D;
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .categories {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            background: #F0F0F0;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn:hover,
+        .category-btn.active {
+            background: #FF6B9D;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .coloring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .coloring-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .coloring-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .coloring-preview {
+            height: 200px;
+            background: #FAFAFA;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #E0E0E0;
+        }
+        
+        .coloring-card h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .coloring-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .canvas-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .color-btn:hover,
+        .color-btn.active {
+            transform: scale(1.1);
+            border-color: #333;
+        }
+        
+        .tools {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .tool-btn {
+            background: #F0F0F0;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        
+        .tool-btn:hover {
+            background: #E0E0E0;
+        }
+        
+        .brush-size {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .size-indicator {
+            width: 20px;
+            height: 20px;
+            background: #FF6B9D;
+            border-radius: 50%;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        canvas {
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div id="home-screen">
+            <div class="header">
+                <h1>🎨 Boyama Oyunu</h1>
+                <p>Çocuklar için eğlenceli boyama deneyimi!</p>
+            </div>
+            
+            <div class="categories">
+                <button class="category-btn active" data-category="all">🎨 Tümü</button>
+                <button class="category-btn" data-category="animals">🐱 Hayvanlar</button>
+                <button class="category-btn" data-category="vehicles">🚗 Taşıtlar</button>
+                <button class="category-btn" data-category="nature">🌸 Doğa</button>
+            </div>
+            
+            <div id="coloring-grid" class="coloring-grid">
+                <div class="loading">Boyama sayfaları yükleniyor...</div>
+            </div>
+        </div>
+        
+        <!-- Coloring Screen -->
+        <div id="coloring-screen" class="hidden">
+            <div class="header">
+                <button class="tool-btn" onclick="goHome()">← Geri</button>
+                <span id="current-page-name">Boyama Sayfası</span>
+                <button class="tool-btn" onclick="saveArtwork()">💾 Kaydet</button>
+            </div>
+            
+            <div class="color-palette" id="color-palette">
+                <!-- Colors will be populated by JavaScript -->
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="drawing-canvas" width="800" height="600"></canvas>
+                <svg id="template-svg" width="800" height="600" style="position: absolute; top: 0; left: 0; pointer-events: none;">
+                    <!-- Template SVG will be loaded here -->
+                </svg>
+            </div>
+            
+            <div class="tools">
+                <div class="brush-size">
+                    <span>Fırça Boyutu:</span>
+                    <input type="range" id="brush-size" min="5" max="25" value="10">
+                    <div class="size-indicator" id="size-indicator"></div>
+                </div>
+                <button class="tool-btn" onclick="clearCanvas()">🗑️ Temizle</button>
+                <button class="tool-btn" onclick="undoLast()">↶ Geri Al</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let coloringPages = [];
+        let selectedCategory = 'all';
+        let selectedColor = '#FF0000';
+        let selectedBrushSize = 10;
+        let isDrawing = false;
+        let canvas, ctx;
+        let paths = [];
+        let currentPath = [];
+        
+        const colors = [
+            '#FF0000', '#FF8800', '#FFFF00', '#00FF00', '#0000FF', '#8800FF',
+            '#FF0088', '#00FFFF', '#88FF00', '#FF8888', '#8888FF', '#FFFF88',
+            '#FFFFFF', '#CCCCCC', '#888888', '#444444', '#000000', '#8B4513'
+        ];
+        
+        const API_BASE = 'http://localhost:8001';
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCanvas();
+            setupColorPalette();
+            setupEventListeners();
+            loadColoringPages();
+            initializeData();
+        });
+        
+        async function initializeData() {
+            try {
+                await fetch(`${API_BASE}/api/initialize-data`, { method: 'POST' });
+            } catch (error) {
+                console.error('Failed to initialize data:', error);
+            }
+        }
+        
+        function initializeCanvas() {
+            canvas = document.getElementById('drawing-canvas');
+            ctx = canvas.getContext('2d');
+            
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = selectedColor;
+            ctx.lineWidth = selectedBrushSize;
+        }
+        
+        function setupColorPalette() {
+            const palette = document.getElementById('color-palette');
+            colors.forEach((color, index) => {
+                const colorBtn = document.createElement('button');
+                colorBtn.className = 'color-btn';
+                colorBtn.style.backgroundColor = color;
+                colorBtn.onclick = () => selectColor(color);
+                if (index === 0) colorBtn.classList.add('active');
+                palette.appendChild(colorBtn);
+            });
+        }
+        
+        function setupEventListeners() {
+            // Category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedCategory = this.dataset.category;
+                    loadColoringPages();
+                });
+            });
+            
+            // Canvas drawing events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+            
+            // Brush size slider
+            document.getElementById('brush-size').addEventListener('input', function() {
+                selectedBrushSize = this.value;
+                ctx.lineWidth = selectedBrushSize;
+                updateSizeIndicator();
+            });
+        }
+        
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            if (e.type === 'touchstart') {
+                startDrawing({ offsetX: x, offsetY: y });
+            } else if (e.type === 'touchmove') {
+                draw({ offsetX: x, offsetY: y });
+            }
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            currentPath = [{ x: e.offsetX, y: e.offsetY }];
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            currentPath.push({ x: e.offsetX, y: e.offsetY });
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+        }
+        
+        function stopDrawing() {
+            if (!isDrawing) return;
+            isDrawing = false;
+            
+            if (currentPath.length > 0) {
+                paths.push({
+                    points: [...currentPath],
+                    color: selectedColor,
+                    size: selectedBrushSize
+                });
+            }
+            currentPath = [];
+        }
+        
+        function selectColor(color) {
+            selectedColor = color;
+            ctx.strokeStyle = color;
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[style*="${color}"]`).classList.add('active');
+        }
+        
+        function updateSizeIndicator() {
+            const indicator = document.getElementById('size-indicator');
+            const size = Math.max(8, selectedBrushSize / 2);
+            indicator.style.width = size + 'px';
+            indicator.style.height = size + 'px';
+        }
+        
+        async function loadColoringPages() {
+            try {
+                const url = selectedCategory === 'all' 
+                    ? `${API_BASE}/api/coloring-pages`
+                    : `${API_BASE}/api/coloring-pages?category=${selectedCategory}`;
+                
+                const response = await fetch(url);
+                coloringPages = await response.json();
+                renderColoringPages();
+            } catch (error) {
+                console.error('Failed to load coloring pages:', error);
+                document.getElementById('coloring-grid').innerHTML = '<div class="loading">Boyama sayfaları yüklenemedi.</div>';
+            }
+        }
+        
+        function renderColoringPages() {
+            const grid = document.getElementById('coloring-grid');
+            
+            if (coloringPages.length === 0) {
+                grid.innerHTML = '<div class="loading">Boyama sayfası bulunamadı.</div>';
+                return;
+            }
+            
+            grid.innerHTML = coloringPages.map(page => `
+                <div class="coloring-card" onclick="openColoringPage('${page.id}', '${page.name}')">
+                    <div class="coloring-preview">
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            ${page.svg_content}
+                        </div>
+                    </div>
+                    <h3>${page.name}</h3>
+                    <p>${getCategoryName(page.category)}</p>
+                </div>
+            `).join('');
+        }
+        
+        function getCategoryName(category) {
+            const names = {
+                animals: 'Hayvanlar',
+                vehicles: 'Taşıtlar',
+                nature: 'Doğa'
+            };
+            return names[category] || category;
+        }
+        
+        async function openColoringPage(pageId, pageName) {
+            try {
+                const response = await fetch(`${API_BASE}/api/coloring-pages/${pageId}`);
+                const page = await response.json();
+                
+                document.getElementById('current-page-name').textContent = pageName;
+                document.getElementById('template-svg').innerHTML = page.svg_content;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                paths = [];
+                
+                // Show coloring screen
+                document.getElementById('home-screen').classList.add('hidden');
+                document.getElementById('coloring-screen').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Failed to load coloring page:', error);
+                alert('Boyama sayfası yüklenemedi.');
+            }
+        }
+        
+        function goHome() {
+            document.getElementById('coloring-screen').classList.add('hidden');
+            document.getElementById('home-screen').classList.remove('hidden');
+        }
+        
+        function clearCanvas() {
+            if (confirm('Tüm boyaları silmek istediğinizden emin misiniz?')) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                paths = [];
+            }
+        }
+        
+        function undoLast() {
+            if (paths.length > 0) {
+                paths.pop();
+                redrawCanvas();
+            }
+        }
+        
+        function redrawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            paths.forEach(path => {
+                if (path.points.length > 0) {
+                    ctx.strokeStyle = path.color;
+                    ctx.lineWidth = path.size;
+                    ctx.beginPath();
+                    ctx.moveTo(path.points[0].x, path.points[0].y);
+                    
+                    for (let i = 1; i < path.points.length; i++) {
+                        ctx.lineTo(path.points[i].x, path.points[i].y);
+                    }
+                    ctx.stroke();
+                }
+            });
+            
+            // Restore current settings
+            ctx.strokeStyle = selectedColor;
+            ctx.lineWidth = selectedBrushSize;
+        }
+        
+        async function saveArtwork() {
+            try {
+                const imageData = canvas.toDataURL('image/png').split(',')[1];
+                const title = prompt('Eserinize bir isim verin:', document.getElementById('current-page-name').textContent);
+                
+                if (title === null) return; // User cancelled
+                
+                const response = await fetch(`${API_BASE}/api/artworks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        coloring_page_id: 'web-canvas',
+                        artwork_data: imageData,
+                        title: title || 'Başlıksız Eser'
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Eseriniz başarıyla kaydedildi!');
+                } else {
+                    alert('Eser kaydedilemedi.');
+                }
+            } catch (error) {
+                console.error('Failed to save artwork:', error);
+                alert('Eser kaydedilirken bir hata oluştu.');
+            }
+        }
+    </script>
+</body>
+</html>
