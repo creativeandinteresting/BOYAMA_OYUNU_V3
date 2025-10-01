@@ -62,7 +62,7 @@ export default function ColoringScreen() {
   const [placedStickers, setPlacedStickers] = useState<any[]>([]);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [artworkTitle, setArtworkTitle] = useState('');
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  // Sound removed for web deployment
   const [svgPaths, setSvgPaths] = useState<string[]>([]);
 
   useEffect(() => {
