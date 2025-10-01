@@ -94,29 +94,54 @@ export default function GalleryScreen() {
 
   const shareArtwork = async (artwork: UserArtwork) => {
     try {
-      await Share.share({
-        message: `${artwork.title || 'Boyama Eserim'} - Boyama Oyunu ile yapıldı!`,
-        url: `data:image/png;base64,${artwork.artwork_data}`,
-      });
+      if (Platform.OS === 'web') {
+        // Web paylaşım
+        if (navigator.share) {
+          await navigator.share({
+            title: artwork.title || 'Boyama Eserim',
+            text: `${artwork.title || 'Boyama Eserim'} - Boyama Oyunu ile yapıldı!`,
+          });
+        } else {
+          // Fallback: clipboard'a kopyala
+          Alert.alert('Bilgi', 'Eser başlığı kopyalandı!');
+        }
+      } else {
+        await Share.share({
+          message: `${artwork.title || 'Boyama Eserim'} - Boyama Oyunu ile yapıldı!`,
+          url: `data:image/png;base64,${artwork.artwork_data}`,
+        });
+      }
     } catch (error) {
       console.error('Share failed:', error);
+      Alert.alert('Hata', 'Paylaşım başarısız oldu.');
     }
   };
 
   const saveToGallery = async (artwork: UserArtwork) => {
     try {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('İzin Gerekli', 'Fotoğrafı kaydetmek için galeri izni gerekiyor.');
-        return;
-      }
+      if (Platform.OS === 'web') {
+        // Web için download functionality
+        const link = document.createElement('a');
+        link.href = `data:image/png;base64,${artwork.artwork_data}`;
+        link.download = `${artwork.title || 'boyama'}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        Alert.alert('Başarılı!', 'Eser indirildi.');
+      } else {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('İzin Gerekli', 'Fotoğrafı kaydetmek için galeri izni gerekiyor.');
+          return;
+        }
 
-      // Convert base64 to file and save
-      const filename = `boyama_${artwork.id}_${Date.now()}.png`;
-      const asset = await MediaLibrary.createAssetAsync(`data:image/png;base64,${artwork.artwork_data}`);
-      await MediaLibrary.createAlbumAsync('Boyama Oyunu', asset, false);
-      
-      Alert.alert('Başarılı!', 'Eser galerinize kaydedildi.');
+        // Convert base64 to file and save
+        const filename = `boyama_${artwork.id}_${Date.now()}.png`;
+        const asset = await MediaLibrary.createAssetAsync(`data:image/png;base64,${artwork.artwork_data}`);
+        await MediaLibrary.createAlbumAsync('Boyama Oyunu', asset, false);
+        
+        Alert.alert('Başarılı!', 'Eser galerinize kaydedildi.');
+      }
     } catch (error) {
       console.error('Save to gallery failed:', error);
       Alert.alert('Hata', 'Eser kaydedilemedi.');
