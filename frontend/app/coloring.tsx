@@ -86,11 +86,9 @@ export default function ColoringScreen() {
 
   const loadSounds = async () => {
     try {
-      const { sound: paintSound } = await Audio.Sound.createAsync(
-        { uri: 'https://www.soundjay.com/misc/sounds/paint-brush-1.mp3' },
-        { shouldPlay: false }
-      );
-      setSound(paintSound);
+      // Note: In production, you would include local sound files in assets
+      // For now, we'll skip sound loading to avoid external dependencies
+      console.log('Sound loading skipped for production build');
     } catch (error) {
       console.log('Sound loading failed:', error);
     }
