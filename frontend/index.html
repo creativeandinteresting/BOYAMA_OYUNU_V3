@@ -291,7 +291,10 @@
             '#FFFFFF', '#CCCCCC', '#888888', '#444444', '#000000', '#8B4513'
         ];
         
-        const API_BASE = window.location.origin.replace(':3000', ':8001');
+        // Use environment variable or dynamic URL for production
+        const API_BASE = (window.location.hostname === 'localhost') 
+            ? 'http://localhost:8001' 
+            : window.location.origin;
         
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
