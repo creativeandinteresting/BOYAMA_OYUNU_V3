@@ -255,10 +255,12 @@
             </div>
             
             <div class="canvas-container">
-                <canvas id="drawing-canvas" width="800" height="600"></canvas>
-                <svg id="template-svg" width="800" height="600" style="position: absolute; top: 0; left: 0; pointer-events: none;">
-                    <!-- Template SVG will be loaded here -->
-                </svg>
+                <div class="canvas-drawing-area">
+                    <canvas id="drawing-canvas" width="760" height="400"></canvas>
+                    <svg id="template-svg" viewBox="0 0 760 400" preserveAspectRatio="xMidYMid meet">
+                        <!-- Template SVG will be loaded here -->
+                    </svg>
+                </div>
             </div>
             
             <div class="tools">
