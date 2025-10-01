@@ -16,8 +16,7 @@ import {
 import { Svg, SvgXml, Circle, Path as SvgPath } from 'react-native-svg';
 import { StatusBar } from 'expo-status-bar';
 import { router, useLocalSearchParams } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Audio } from 'expo-av';
+// Mobile-specific imports removed for web deployment
 
 // For web deployment, we'll use SVG exclusively
 // Remove Skia dependency for Kubernetes deployment
