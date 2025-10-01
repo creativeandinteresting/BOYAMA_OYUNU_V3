@@ -369,8 +369,12 @@
             e.preventDefault();
             const touch = e.touches[0];
             const rect = canvas.getBoundingClientRect();
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
+            
+            // Calculate correct coordinates with canvas scaling
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (touch.clientX - rect.left) * scaleX;
+            const y = (touch.clientY - rect.top) * scaleY;
             
             if (e.type === 'touchstart') {
                 startDrawing({ offsetX: x, offsetY: y });
@@ -381,16 +385,43 @@
         
         function startDrawing(e) {
             isDrawing = true;
-            currentPath = [{ x: e.offsetX, y: e.offsetY }];
+            
+            // Get accurate coordinates
+            let x = e.offsetX;
+            let y = e.offsetY;
+            
+            // If offsetX/Y not available, calculate from mouse position
+            if (x === undefined || y === undefined) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                x = (e.clientX - rect.left) * scaleX;
+                y = (e.clientY - rect.top) * scaleY;
+            }
+            
+            currentPath = [{ x: x, y: y }];
             ctx.beginPath();
-            ctx.moveTo(e.offsetX, e.offsetY);
+            ctx.moveTo(x, y);
         }
         
         function draw(e) {
             if (!isDrawing) return;
             
-            currentPath.push({ x: e.offsetX, y: e.offsetY });
-            ctx.lineTo(e.offsetX, e.offsetY);
+            // Get accurate coordinates
+            let x = e.offsetX;
+            let y = e.offsetY;
+            
+            // If offsetX/Y not available, calculate from mouse position
+            if (x === undefined || y === undefined) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                x = (e.clientX - rect.left) * scaleX;
+                y = (e.clientY - rect.top) * scaleY;
+            }
+            
+            currentPath.push({ x: x, y: y });
+            ctx.lineTo(x, y);
             ctx.stroke();
         }
         
