@@ -81,14 +81,9 @@ export default function ColoringScreen() {
     }
   };
 
-  const playPaintSound = async () => {
-    try {
-      if (sound) {
-        await sound.replayAsync();
-      }
-    } catch (error) {
-      console.log('Sound play failed:', error);
-    }
+  const playPaintSound = () => {
+    // Sound disabled for web deployment
+    console.log('Paint sound would play here');
   };
 
   const loadColoringPage = async () => {
