@@ -19,15 +19,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
 
-// Conditionally import Skia only for native platforms
-let Canvas, Path, Skia, useCanvasRef;
-if (Platform.OS !== 'web') {
-  const SkiaModule = require('@shopify/react-native-skia');
-  Canvas = SkiaModule.Canvas;
-  Path = SkiaModule.Path;
-  Skia = SkiaModule.Skia;
-  useCanvasRef = SkiaModule.useCanvasRef;
-}
+// For web deployment, we'll use SVG exclusively
+// Remove Skia dependency for Kubernetes deployment
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
