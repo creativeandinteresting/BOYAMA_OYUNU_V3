@@ -10,7 +10,8 @@ import {
   Alert,
   Image,
   Modal,
-  Share
+  Share,
+  Platform
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
