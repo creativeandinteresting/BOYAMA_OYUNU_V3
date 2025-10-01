@@ -514,31 +514,41 @@
                 
                 document.getElementById('current-page-name').textContent = pageName;
                 
-                // Process SVG content to fit canvas and make it bigger
+                // Process SVG to make it fill the entire 800x600 canvas
                 let svgContent = page.svg_content;
                 
-                // Scale all coordinates by 2x to make shapes bigger
+                // Scale all numeric values by 2.5x to fill the canvas
                 svgContent = svgContent.replace(/(\d+(?:\.\d+)?)/g, (match) => {
                     const num = parseFloat(match);
-                    return (num * 1.8).toString(); // 1.8x scale for bigger shapes
+                    return (num * 2.5).toString(); // 2.5x scale to fill canvas
                 });
                 
-                // Set proper viewBox and dimensions
-                svgContent = svgContent.replace(/viewBox='[^']*'/g, "viewBox='0 0 760 400'");
-                svgContent = svgContent.replace(/viewBox="[^"]*"/g, 'viewBox="0 0 760 400"');
+                // Center the content by adding offset
+                const offsetX = 50;  // Center horizontally
+                const offsetY = 50;  // Center vertically
                 
-                // Ensure SVG has correct attributes
+                // Add transform to center the shape
+                svgContent = svgContent.replace('<svg', `<svg transform="translate(${offsetX},${offsetY})"`);
+                
+                // Set viewBox to match canvas exactly
+                svgContent = svgContent.replace(/viewBox='[^']*'/g, "viewBox='0 0 800 600'");
+                svgContent = svgContent.replace(/viewBox="[^"]*"/g, 'viewBox="0 0 800 600"');
+                
                 if (!svgContent.includes('viewBox=')) {
-                    svgContent = svgContent.replace('<svg', '<svg viewBox="0 0 760 400"');
+                    svgContent = svgContent.replace('<svg', '<svg viewBox="0 0 800 600"');
                 }
                 
-                // Remove any existing width/height and set to 100%
-                svgContent = svgContent.replace(/width="[^"]*"/g, 'width="100%"');
-                svgContent = svgContent.replace(/height="[^"]*"/g, 'height="100%"');
+                // Set SVG to exact canvas size
+                svgContent = svgContent.replace(/width="[^"]*"/g, 'width="800"');
+                svgContent = svgContent.replace(/height="[^"]*"/g, 'height="600"');
+                
+                if (!svgContent.includes('width=')) {
+                    svgContent = svgContent.replace('<svg', '<svg width="800" height="600"');
+                }
                 
                 document.getElementById('template-svg').innerHTML = svgContent;
                 
-                // Clear canvas
+                // Clear canvas and reset drawing
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 paths = [];
                 
