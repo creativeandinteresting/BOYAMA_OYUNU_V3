@@ -19,9 +19,9 @@
       "bundleIdentifier": "com.boyamaoyunu.cocuk",
       "buildNumber": "1.0.0",
       "infoPlist": {
-        "NSCameraUsageDescription": "Bu uygulama fotoğraf çekip galeri özelliği için kameraya erişim gerektirir.",
-        "NSPhotoLibraryUsageDescription": "Bu uygulama eserlerinizi galeriye kaydetmek için fotoğraf kitaplığına erişim gerektirir.",
-        "NSMicrophoneUsageDescription": "Bu uygulama ses efektleri için mikrofona erişim gerektirir."
+        "NSCameraUsageDescription": "This app needs camera access for photo gallery features.",
+        "NSPhotoLibraryUsageDescription": "This app needs photo library access to save your artworks to gallery.",
+        "NSMicrophoneUsageDescription": "This app needs microphone access for sound effects."
       }
     },
     "android": {
