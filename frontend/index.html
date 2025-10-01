@@ -314,9 +314,9 @@
             canvas = document.getElementById('drawing-canvas');
             ctx = canvas.getContext('2d');
             
-            // Set exact canvas size to match SVG
-            canvas.width = 800;
-            canvas.height = 600;
+            // Set mobile-friendly canvas size
+            canvas.width = 500;
+            canvas.height = 350;
             
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
