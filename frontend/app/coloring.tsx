@@ -69,11 +69,6 @@ export default function ColoringScreen() {
     loadColoringPage();
     loadStickers();
     loadSounds();
-    return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-    };
   }, []);
 
   const loadSounds = async () => {
