@@ -315,6 +315,10 @@
             canvas = document.getElementById('drawing-canvas');
             ctx = canvas.getContext('2d');
             
+            // Set canvas size responsive
+            canvas.width = 760;
+            canvas.height = 400;
+            
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.strokeStyle = selectedColor;
