@@ -58,7 +58,7 @@ const brushSizes = [5, 10, 15, 20, 25];
 export default function ColoringScreen() {
   const params = useLocalSearchParams();
   const { pageId, pageName } = params;
-  const canvasRef = useCanvasRef();
+  const canvasRef = Platform.OS !== 'web' ? useCanvasRef() : useRef();
   
   const [coloringPage, setColoringPage] = useState<ColoringPage | null>(null);
   const [selectedColor, setSelectedColor] = useState('#FF0000');
@@ -71,6 +71,7 @@ export default function ColoringScreen() {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [artworkTitle, setArtworkTitle] = useState('');
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [svgPaths, setSvgPaths] = useState<string[]>([]);
 
   useEffect(() => {
     loadColoringPage();
