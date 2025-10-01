@@ -133,20 +133,40 @@ export default function ColoringScreen() {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: (evt) => {
         const { locationX, locationY } = evt.nativeEvent;
-        const path = Skia.Path.Make();
-        path.moveTo(locationX, locationY);
-        setCurrentPath({
-          path,
-          color: selectedColor,
-          strokeWidth: selectedBrushSize,
-        });
+        
+        if (Platform.OS === 'web') {
+          // Web platform: use SVG paths
+          const pathString = `M${locationX},${locationY}`;
+          setCurrentPath({
+            pathString,
+            color: selectedColor,
+            strokeWidth: selectedBrushSize,
+          });
+        } else {
+          // Native platform: use Skia
+          const path = Skia.Path.Make();
+          path.moveTo(locationX, locationY);
+          setCurrentPath({
+            path,
+            color: selectedColor,
+            strokeWidth: selectedBrushSize,
+          });
+        }
         playPaintSound();
       },
       onPanResponderMove: (evt) => {
         if (currentPath) {
           const { locationX, locationY } = evt.nativeEvent;
-          currentPath.path.lineTo(locationX, locationY);
-          setCurrentPath({ ...currentPath });
+          
+          if (Platform.OS === 'web') {
+            // Web platform: extend SVG path
+            currentPath.pathString += ` L${locationX},${locationY}`;
+            setCurrentPath({ ...currentPath });
+          } else {
+            // Native platform: extend Skia path
+            currentPath.path.lineTo(locationX, locationY);
+            setCurrentPath({ ...currentPath });
+          }
         }
       },
       onPanResponderRelease: () => {
