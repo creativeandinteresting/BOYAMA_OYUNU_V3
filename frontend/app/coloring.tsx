@@ -10,14 +10,24 @@ import {
   PanResponder,
   Modal,
   FlatList,
-  TextInput
+  TextInput,
+  Platform
 } from 'react-native';
-import { Svg, SvgXml, Circle } from 'react-native-svg';
+import { Svg, SvgXml, Circle, Path as SvgPath } from 'react-native-svg';
 import { StatusBar } from 'expo-status-bar';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Canvas, Path, Skia, useCanvasRef } from '@shopify/react-native-skia';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
+
+// Conditionally import Skia only for native platforms
+let Canvas, Path, Skia, useCanvasRef;
+if (Platform.OS !== 'web') {
+  const SkiaModule = require('@shopify/react-native-skia');
+  Canvas = SkiaModule.Canvas;
+  Path = SkiaModule.Path;
+  Skia = SkiaModule.Skia;
+  useCanvasRef = SkiaModule.useCanvasRef;
+}
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
