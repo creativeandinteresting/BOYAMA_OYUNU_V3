@@ -1,64 +1,12 @@
 {
-  "expo": {
-    "name": "Kids Coloring Game",
-    "slug": "kids-coloring-game",
-    "version": "1.0.0",
-    "orientation": "default",
-    "icon": "./assets/images/icon.png",
-    "scheme": "coloring-game",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": false,
-    "description": "Fun coloring game for kids with animals, vehicles and nature themes!",
-    "keywords": ["coloring", "kids", "game", "education", "creativity", "art"],
-    "primaryColor": "#FF6B9D",
-    "backgroundColor": "#FFF5F5",
-    "privacy": "public",
-    "platforms": ["web"],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.boyamaoyunu.cocuk",
-      "buildNumber": "1.0.0",
-      "infoPlist": {
-        "NSCameraUsageDescription": "This app needs camera access for photo gallery features.",
-        "NSPhotoLibraryUsageDescription": "This app needs photo library access to save your artworks to gallery.",
-        "NSMicrophoneUsageDescription": "This app needs microphone access for sound effects."
-      }
-    },
-    "android": {
-      "package": "com.boyamaoyunu.cocuk",
-      "versionCode": 1,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#FF6B9D"
-      },
-      "edgeToEdgeEnabled": true,
-      "permissions": [
-        "WRITE_EXTERNAL_STORAGE",
-        "READ_EXTERNAL_STORAGE",
-        "CAMERA",
-        "RECORD_AUDIO"
-      ],
-      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.boyamaoyunu.cocuk"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-image.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#FF6B9D"
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
+  "name": "kids-coloring-game-web",
+  "version": "1.0.0",
+  "description": "Kids Coloring Game - Static Web App",
+  "main": "index.html",
+  "type": "web",
+  "homepage": "./",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "build": "echo 'Static web app - no build needed'"
   }
 }
