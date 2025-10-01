@@ -13,7 +13,7 @@
     "primaryColor": "#FF6B9D",
     "backgroundColor": "#FFF5F5",
     "privacy": "public",
-    "platforms": ["android", "ios"],
+    "platforms": ["android", "ios", "web"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.boyamaoyunu.cocuk",
