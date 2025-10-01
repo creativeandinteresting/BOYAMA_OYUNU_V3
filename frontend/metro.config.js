@@ -5,6 +5,11 @@ const { FileStore } = require('metro-cache');
 
 const config = getDefaultConfig(__dirname);
 
+// Configure SVG support
+config.transformer.babelTransformerPath = require.resolve('react-native-svg-transformer');
+config.resolver.assetExts = config.resolver.assetExts.filter(ext => ext !== 'svg');
+config.resolver.sourceExts = [...config.resolver.sourceExts, 'svg'];
+
 // Use a stable on-disk store (shared across web/android)
 const root = process.env.METRO_CACHE_ROOT || path.join(__dirname, '.metro-cache');
 config.cacheStores = [
