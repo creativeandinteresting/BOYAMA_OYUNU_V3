@@ -650,7 +650,7 @@
                 });
                 
                 if (response.ok) {
-                    alert('Eseriniz başarıyla kaydedildi!');
+                    alert('Eseriniz başarıyla kaydedildi! Galerinizde görebilirsiniz.');
                 } else {
                     alert('Eser kaydedilemedi.');
                 }
@@ -658,6 +658,72 @@
                 console.error('Failed to save artwork:', error);
                 alert('Eser kaydedilirken bir hata oluştu.');
             }
+        }
+        
+        async function showGallery() {
+            try {
+                // Show gallery screen
+                document.getElementById('home-screen').classList.add('hidden');
+                document.getElementById('coloring-screen').classList.add('hidden');
+                document.getElementById('gallery-screen').classList.remove('hidden');
+                
+                // Load artworks
+                await loadGalleryArtworks();
+            } catch (error) {
+                console.error('Failed to show gallery:', error);
+                alert('Galeri açılamadı.');
+            }
+        }
+        
+        async function loadGalleryArtworks() {
+            try {
+                document.getElementById('gallery-grid').innerHTML = '<div class="loading">Eserler yükleniyor...</div>';
+                
+                const response = await fetch(`${API_BASE}/api/artworks`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const artworks = await response.json();
+                console.log('Loaded artworks:', artworks.length);
+                renderGalleryArtworks(artworks);
+            } catch (error) {
+                console.error('Failed to load artworks:', error);
+                document.getElementById('gallery-grid').innerHTML = '<div class="loading">Eserler yüklenemedi.</div>';
+            }
+        }
+        
+        function renderGalleryArtworks(artworks) {
+            const gallery = document.getElementById('gallery-grid');
+            
+            if (artworks.length === 0) {
+                gallery.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 60px; margin-bottom: 20px;">🎨</div>
+                        <h3>Galeriniz Boş</h3>
+                        <p>Henüz hiç eser kaydetmediniz.<br/>Boyama yapmaya başlayın!</p>
+                        <button class="tool-btn" onclick="goHome()" style="margin-top: 20px; background: #FF6B9D; color: white; padding: 12px 24px;">
+                            Boyamaya Başla
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            gallery.innerHTML = artworks.map(artwork => `
+                <div class="coloring-card" onclick="viewArtwork('${artwork.id}')">
+                    <div class="coloring-preview">
+                        <img src="data:image/png;base64,${artwork.artwork_data}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;" />
+                    </div>
+                    <h3 style="font-size: 14px;">${artwork.title || 'Başlıksız Eser'}</h3>
+                    <p style="font-size: 12px;">${new Date(artwork.completed_at).toLocaleDateString('tr-TR')}</p>
+                </div>
+            `).join('');
+        }
+        
+        function viewArtwork(artworkId) {
+            // For now, just show a message. You can expand this to show full screen view
+            alert('Eser detayları - Geliştirme aşamasında!');
         }
     </script>
 </body>
