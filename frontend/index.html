@@ -365,60 +365,58 @@
             });
         }
         
-        function handleTouch(e) {
-            e.preventDefault();
-            const touch = e.touches[0];
+        function getCanvasCoordinates(e) {
             const rect = canvas.getBoundingClientRect();
-            
-            // Calculate correct coordinates with canvas scaling
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
-            const x = (touch.clientX - rect.left) * scaleX;
-            const y = (touch.clientY - rect.top) * scaleY;
+            
+            let clientX, clientY;
+            
+            if (e.touches && e.touches[0]) {
+                // Touch event
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                // Mouse event
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
+            
+            return { x: Math.round(x), y: Math.round(y) };
+        }
+        
+        function handleTouch(e) {
+            e.preventDefault();
+            const coords = getCanvasCoordinates(e);
             
             if (e.type === 'touchstart') {
-                startDrawing({ offsetX: x, offsetY: y });
+                startDrawing(coords);
             } else if (e.type === 'touchmove') {
-                draw({ offsetX: x, offsetY: y });
+                draw(coords);
             }
         }
         
-        function startDrawing(e) {
+        function startDrawing(coords) {
             isDrawing = true;
             
-            // Get accurate coordinates
-            let x = e.offsetX;
-            let y = e.offsetY;
-            
-            // If offsetX/Y not available, calculate from mouse position
-            if (x === undefined || y === undefined) {
-                const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width;
-                const scaleY = canvas.height / rect.height;
-                x = (e.clientX - rect.left) * scaleX;
-                y = (e.clientY - rect.top) * scaleY;
-            }
+            const x = coords.x;
+            const y = coords.y;
             
             currentPath = [{ x: x, y: y }];
             ctx.beginPath();
             ctx.moveTo(x, y);
+            
+            console.log(`Start drawing at: ${x}, ${y}`);
         }
         
-        function draw(e) {
+        function draw(coords) {
             if (!isDrawing) return;
             
-            // Get accurate coordinates
-            let x = e.offsetX;
-            let y = e.offsetY;
-            
-            // If offsetX/Y not available, calculate from mouse position
-            if (x === undefined || y === undefined) {
-                const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width;
-                const scaleY = canvas.height / rect.height;
-                x = (e.clientX - rect.left) * scaleX;
-                y = (e.clientY - rect.top) * scaleY;
-            }
+            const x = coords.x;
+            const y = coords.y;
             
             currentPath.push({ x: x, y: y });
             ctx.lineTo(x, y);
