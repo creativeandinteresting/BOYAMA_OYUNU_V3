@@ -484,7 +484,28 @@
                 const page = await response.json();
                 
                 document.getElementById('current-page-name').textContent = pageName;
-                document.getElementById('template-svg').innerHTML = page.svg_content;
+                
+                // Process SVG content to fit canvas
+                let svgContent = page.svg_content;
+                
+                // Update SVG to fit our canvas size
+                if (svgContent.includes('viewBox=')) {
+                    // Replace existing viewBox with our canvas size
+                    svgContent = svgContent.replace(/viewBox='[^']*'/g, "viewBox='0 0 760 400'");
+                    svgContent = svgContent.replace(/viewBox="[^"]*"/g, 'viewBox="0 0 760 400"');
+                } else {
+                    // Add viewBox if not present
+                    svgContent = svgContent.replace('<svg', '<svg viewBox="0 0 760 400"');
+                }
+                
+                // Add width and height attributes
+                svgContent = svgContent.replace('<svg', '<svg width="760" height="400"');
+                
+                // Scale content to fit - multiply coordinates by scale factors
+                const scaleX = 760 / 300; // assuming original viewBox was 300
+                const scaleY = 400 / 300;
+                
+                document.getElementById('template-svg').innerHTML = svgContent;
                 
                 // Clear canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
