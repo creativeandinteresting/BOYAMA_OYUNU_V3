@@ -519,36 +519,36 @@
                 
                 document.getElementById('current-page-name').textContent = pageName;
                 
-                // Process SVG to make it fill the entire 800x600 canvas
+                // Process SVG to fit mobile-friendly 500x350 canvas
                 let svgContent = page.svg_content;
                 
-                // Scale all numeric values by 2.5x to fill the canvas
+                // Scale all numeric values by 1.5x to fit mobile canvas
                 svgContent = svgContent.replace(/(\d+(?:\.\d+)?)/g, (match) => {
                     const num = parseFloat(match);
-                    return (num * 2.5).toString(); // 2.5x scale to fill canvas
+                    return (num * 1.5).toString(); // 1.5x scale for mobile canvas
                 });
                 
-                // Center the content by adding offset
-                const offsetX = 50;  // Center horizontally
-                const offsetY = 50;  // Center vertically
+                // Center the content
+                const offsetX = 25;  // Center horizontally in smaller canvas
+                const offsetY = 25;  // Center vertically
                 
                 // Add transform to center the shape
                 svgContent = svgContent.replace('<svg', `<svg transform="translate(${offsetX},${offsetY})"`);
                 
-                // Set viewBox to match canvas exactly
-                svgContent = svgContent.replace(/viewBox='[^']*'/g, "viewBox='0 0 800 600'");
-                svgContent = svgContent.replace(/viewBox="[^"]*"/g, 'viewBox="0 0 800 600"');
+                // Set viewBox to match mobile canvas
+                svgContent = svgContent.replace(/viewBox='[^']*'/g, "viewBox='0 0 500 350'");
+                svgContent = svgContent.replace(/viewBox="[^"]*"/g, 'viewBox="0 0 500 350"');
                 
                 if (!svgContent.includes('viewBox=')) {
-                    svgContent = svgContent.replace('<svg', '<svg viewBox="0 0 800 600"');
+                    svgContent = svgContent.replace('<svg', '<svg viewBox="0 0 500 350"');
                 }
                 
-                // Set SVG to exact canvas size
-                svgContent = svgContent.replace(/width="[^"]*"/g, 'width="800"');
-                svgContent = svgContent.replace(/height="[^"]*"/g, 'height="600"');
+                // Set SVG to mobile canvas size
+                svgContent = svgContent.replace(/width="[^"]*"/g, 'width="500"');
+                svgContent = svgContent.replace(/height="[^"]*"/g, 'height="350"');
                 
                 if (!svgContent.includes('width=')) {
-                    svgContent = svgContent.replace('<svg', '<svg width="800" height="600"');
+                    svgContent = svgContent.replace('<svg', '<svg width="500" height="350"');
                 }
                 
                 document.getElementById('template-svg').innerHTML = svgContent;
