@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Çocuk Boyama Oyunu</title>
+<style>
+body { font-family:sans-serif; background:#FFF5F5; margin:0; padding:0;}
+.container {max-width:900px; margin:auto; padding:20px;}
+.header{text-align:center; margin-bottom:20px;}
+.coloring-grid {display:flex; flex-wrap:wrap; gap:20px; justify-content:center;}
+.coloring-card {background:#fff; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); padding:10px; cursor:pointer;}
+.coloring-preview {width:150px; height:150px; border:1px solid #ccc; display:flex; justify-content:center; align-items:center; margin-bottom:10px;}
+.canvas-container {text-align:center; margin-top:20px;}
+canvas {border:1px solid #ccc;}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="home-screen">
+<div class="header"><h1>🎨 Boyama Oyunu</h1></div>
+<div class="categories"></div>
+<div id="coloring-grid" class="coloring-grid"></div>
+</div>
+<div id="coloring-screen" class="hidden">
+<div class="canvas-container">
+<h2 id="current-page-name"></h2>
+<canvas id="drawing-canvas" width="500" height="350"></canvas>
+<svg id="template-svg" viewBox="0 0 500 350" style="position:absolute; top:0; left:0; width:500px; height:350px; pointer-events:none;"></svg>
+</div>
+</div>
+</div>
+
+<script>
+let coloringPages = [
+  {id:'cat', name:'Kedi', category:'animals', file:'cat.svg'},
+  {id:'car', name:'Araba', category:'vehicles', file:'car.svg'},
+  {id:'flower', name:'Çiçek', category:'nature', file:'flower.svg'}
+];
+let selectedCategory='all';
+let canvas, ctx, paths=[], currentPath=[];
+document.addEventListener('DOMContentLoaded',()=>{
+canvas=document.getElementById('drawing-canvas');
+ctx=canvas.getContext('2d');
+ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#FF0000'; ctx.lineWidth=5;
+loadColoringPages();
+});
+function loadColoringPages(){
+  const grid=document.getElementById('coloring-grid');
+  const pages=coloringPages.filter(p=>selectedCategory==='all'||p.category===selectedCategory);
+  grid.innerHTML='';
+  pages.forEach(p=>{
+    const card=document.createElement('div'); card.className='coloring-card';
+    card.innerHTML=`<div class="coloring-preview"><img src="${p.file}" style="width:100%; height:100%; object-fit:contain;"></div><h3>${p.name}</h3><p>${p.category}</p>`;
+    card.onclick=()=>openColoringPage(p.file,p.name);
+    grid.appendChild(card);
+  });
+}
+async function openColoringPage(file,pageName){
+  document.getElementById('current-page-name').textContent=pageName;
+  const svgContent=await fetch(file).then(r=>r.text());
+  document.getElementById('template-svg').innerHTML=svgContent;
+  ctx.clearRect(0,0,canvas.width,canvas.height); paths=[];
+  document.getElementById('home-screen').classList.add('hidden');
+  document.getElementById('coloring-screen').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
